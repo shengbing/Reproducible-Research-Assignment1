@@ -1,0 +1,86 @@
+---
+title: "Reproducible Research: Peer Assessment 1"
+output: 
+  html_document:
+    keep_md: true
+---
+
+
+## Loading and preprocessing the data
+```{r}
+#loading the data
+mydata <- read.csv('C:\\Users\\Shengbing\\Documents\\R\\Reproducible_research\\assignment1\\RepData_PeerAssessment1\\activity\\activity.csv')
+#remove missing values
+#mydata <- mydata[complete.cases(mydata),]
+
+
+```
+
+
+
+## What is mean total number of steps taken per day?
+
+**Both histogram and bargraph are shown below.**
+
+```{r}
+total.perday <- tapply(mydata$steps, mydata$date, sum, na.rm = T) #sum of steps per day
+hist(total.perday, col = 'blue', breaks=15, main = 'Total steps each day (histogram)')
+barplot(total.perday, col = 'blue', main = 'Total steps each day (barplot)')
+mean.eachday <- tapply(mydata$steps, mydata$date, mean, na.rm = T)
+mean.eachday
+hist(mean.eachday, col = 'blue', main = 'mean steps each day')
+median.eachday <- tapply(mydata$steps, mydata$date, median, na.rm = T) #there are a lot of #zeros each day, so the median is zero
+median.eachday
+hist(median.eachday, col = 'blue', breaks = 10, main = 'median steps each day')
+
+```
+
+
+## What is the average daily activity pattern?
+```{r}
+steps.each.interval <- tapply(mydata$steps, mydata$interval, mean, na.rm = T)
+plot(names(steps.each.interval), steps.each.interval, type = 'l', col = 'blue', main = 'average daily activity pattern', xlab = '5-min-interval', ylab = 'average number of steps')
+which.max(steps.each.interval)
+
+```
+
+## Imputing missing values
+**Impute missing data using mean of each 5-minute interval**
+
+*Values of total number of steps, mean and median total number of steps taken per day are different from the first part of the assignment. Imputing missing data removes a lot of zeros of the total daily number of steps.*
+
+```{r}
+#Calculate and report the total number of missing values in the dataset (i.e. the #total number of rows with NAs)
+nrow(mydata) - sum(complete.cases(mydata))
+#fill in all of the missing values in the dataset.
+imputed.data = mydata
+interval.mean = tapply(imputed.data$steps, imputed.data$interval, mean, na.rm = T)
+for (i in names(interval.mean)) {
+        imputed.data$steps[imputed.data$interval == as.integer(i) & is.na(imputed.data$steps)]= interval.mean[i]
+}
+#total, mean and median of imputed data
+total.perday <- tapply(imputed.data$steps, imputed.data$date, sum) #sum of steps per day
+hist(total.perday, col = 'red', breaks =15, main = 'Total steps each day (imputed)')
+mean.eachday <- tapply(imputed.data$steps, imputed.data$date, mean)
+mean.eachday
+hist(mean.eachday, col = 'red', main = 'mean steps each day (imputed)')
+median.eachday <- tapply(imputed.data$steps, imputed.data$date, median) 
+median.eachday  #there are still a lot of zeros
+hist(median.eachday, col = 'red', main = 'median steps each day (imputed)')
+```
+
+
+## Are there differences in activity patterns between weekdays and weekends?
+**The answer is yes**
+*It seems that in weekdays there is a major peak between 500 and 1000 minuts, but in weekend the activity is more spread*
+
+```{r}
+#install timeData package if necessary and load it
+library(timeDate)
+#Create a new factor variable in the dataset with two levels - "weekday" and #"weekend" 
+imputed.data$isweekdays <- factor(isWeekday(as.Date(imputed.data$date), wday = 1:5), labels = c('weekend', 'weekday'))
+#use ggplot2 to make a panel plot
+library(ggplot2)
+ggplot(data = imputed.data, aes(x = interval, y = steps)) + stat_summary(col = 'blue', fun.y = mean, geom = 'line') + facet_grid(isweekdays~.)
+
+```
