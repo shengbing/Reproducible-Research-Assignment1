@@ -1,4 +1,9 @@
-# Reproducible Research: Peer Assessment 1
+---
+title: "Reproducible Research: Peer Assessment 1"
+output: 
+  html_document:
+    keep_md: true
+---
 
 
 ## Loading and preprocessing the data
@@ -22,13 +27,13 @@ total.perday <- tapply(mydata$steps, mydata$date, sum, na.rm = T) #sum of steps 
 hist(total.perday, col = 'blue', breaks=15, main = 'Total steps each day (histogram)')
 ```
 
-![plot of chunk unnamed-chunk-2](./PA1_template_files/figure-html/unnamed-chunk-21.png) 
+![plot of chunk unnamed-chunk-2](figure/unnamed-chunk-21.png) 
 
 ```r
 barplot(total.perday, col = 'blue', main = 'Total steps each day (barplot)')
 ```
 
-![plot of chunk unnamed-chunk-2](./PA1_template_files/figure-html/unnamed-chunk-22.png) 
+![plot of chunk unnamed-chunk-2](figure/unnamed-chunk-22.png) 
 
 ```r
 mean.eachday <- tapply(mydata$steps, mydata$date, mean, na.rm = T)
@@ -64,7 +69,7 @@ mean.eachday
 hist(mean.eachday, col = 'blue', main = 'mean steps each day')
 ```
 
-![plot of chunk unnamed-chunk-2](./PA1_template_files/figure-html/unnamed-chunk-23.png) 
+![plot of chunk unnamed-chunk-2](figure/unnamed-chunk-23.png) 
 
 ```r
 median.eachday <- tapply(mydata$steps, mydata$date, median, na.rm = T) #there are a lot of #zeros each day, so the median is zero
@@ -100,7 +105,7 @@ median.eachday
 hist(median.eachday, col = 'blue', breaks = 10, main = 'median steps each day')
 ```
 
-![plot of chunk unnamed-chunk-2](./PA1_template_files/figure-html/unnamed-chunk-24.png) 
+![plot of chunk unnamed-chunk-2](figure/unnamed-chunk-24.png) 
 
 
 ## What is the average daily activity pattern?
@@ -110,7 +115,7 @@ steps.each.interval <- tapply(mydata$steps, mydata$interval, mean, na.rm = T)
 plot(names(steps.each.interval), steps.each.interval, type = 'l', col = 'blue', main = 'average daily activity pattern', xlab = '5-min-interval', ylab = 'average number of steps')
 ```
 
-![plot of chunk unnamed-chunk-3](./PA1_template_files/figure-html/unnamed-chunk-3.png) 
+![plot of chunk unnamed-chunk-3](figure/unnamed-chunk-3.png) 
 
 ```r
 which.max(steps.each.interval)
@@ -148,7 +153,7 @@ total.perday <- tapply(imputed.data$steps, imputed.data$date, sum) #sum of steps
 hist(total.perday, col = 'red', breaks =15, main = 'Total steps each day (imputed)')
 ```
 
-![plot of chunk unnamed-chunk-4](./PA1_template_files/figure-html/unnamed-chunk-41.png) 
+![plot of chunk unnamed-chunk-4](figure/unnamed-chunk-41.png) 
 
 ```r
 mean.eachday <- tapply(imputed.data$steps, imputed.data$date, mean)
@@ -184,7 +189,7 @@ mean.eachday
 hist(mean.eachday, col = 'red', main = 'mean steps each day (imputed)')
 ```
 
-![plot of chunk unnamed-chunk-4](./PA1_template_files/figure-html/unnamed-chunk-42.png) 
+![plot of chunk unnamed-chunk-4](figure/unnamed-chunk-42.png) 
 
 ```r
 median.eachday <- tapply(imputed.data$steps, imputed.data$date, median) 
@@ -220,7 +225,7 @@ median.eachday  #there are still a lot of zeros
 hist(median.eachday, col = 'red', main = 'median steps each day (imputed)')
 ```
 
-![plot of chunk unnamed-chunk-4](./PA1_template_files/figure-html/unnamed-chunk-43.png) 
+![plot of chunk unnamed-chunk-4](figure/unnamed-chunk-43.png) 
 
 
 ## Are there differences in activity patterns between weekdays and weekends?
@@ -238,4 +243,4 @@ library(ggplot2)
 ggplot(data = imputed.data, aes(x = interval, y = steps)) + stat_summary(col = 'blue', fun.y = mean, geom = 'line') + facet_grid(isweekdays~.)
 ```
 
-![plot of chunk unnamed-chunk-5](./PA1_template_files/figure-html/unnamed-chunk-5.png) 
+![plot of chunk unnamed-chunk-5](figure/unnamed-chunk-5.png) 
